@@ -7,4 +7,5 @@ import { Component } from '@angular/core';
 })
 export class AppComponent {
   title = 'ReCapProjectdb';
+  user: string = 'Neslihan Kuş Göymener';
 }
