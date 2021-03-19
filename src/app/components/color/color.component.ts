@@ -1,7 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { Color } from 'src/app/models/color';
-
-import { ColorResponseModel } from 'src/app/models/colorResponseModel';
 import { ColorService } from 'src/app/services/color.service';
 
 @Component({
@@ -10,20 +8,42 @@ import { ColorService } from 'src/app/services/color.service';
   styleUrls: ['./color.component.css']
 })
 export class ColorComponent implements OnInit {
-
-  colors:Color[] = [];
-  dataLoaded=false;
-
-  constructor(private ColorService:ColorService) { }
+  colors:Color[]=[]
+  currentColor: Color;
+  removeColor:Color;
+  constructor(private colorService:ColorService) { }
 
   ngOnInit(): void {
     this.getColors();
   }
-  getColors(){
-    this.ColorService.getColors().subscribe(response=>{
-      this.colors=response.data
-      this.dataLoaded=true;
 
-    })
-}
+  getColors(){
+    this.colorService.getColors().subscribe(response=>{
+      this.colors = response.data;
+    });
+  }
+
+  setCurrentColor(color:Color){
+    this.currentColor = color;
+  }
+
+  getCurrentColorClass(color:Color){
+    if(color == this.currentColor){
+      return "list-group-item list-group-item-action bg-dark active"
+    }else{
+      return "list-group-item list-group-item-action"
+    }
+  }
+
+  removeCurrentColor(){
+    this.currentColor=this.removeColor
+  }
+  
+  getAllColorsClass(){
+    if(!this.currentColor){
+      return "list-group-item list-group-item-action active"
+    }else{
+      return "list-group-item list-group-item-action"
+    }
+  }
 }

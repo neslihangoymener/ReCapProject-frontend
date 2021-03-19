@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { Car } from 'src/app/models/car';
-
-import { CarResponseModel } from 'src/app/models/carResponseModel';
+import { ActivatedRoute } from '@angular/router';
+import { CarDetailsDto } from 'src/app/models/carDetailsDto';
 import { CarService } from 'src/app/services/car.service';
 
 @Component({
@@ -10,23 +9,60 @@ import { CarService } from 'src/app/services/car.service';
   styleUrls: ['./car.component.css']
 })
 export class CarComponent implements OnInit {
+  cars : CarDetailsDto[] = [];
+  currentCar: CarDetailsDto = {
+    carId: 0,
+    brandName: '',
+    colorName: '',
+    dailyPrice: 0,
+    description:'',    
+    modelYear:0,
+  };
+  dataStatus : boolean = false;
 
-  cars:Car[] = [];
-  dataLoaded=false;
-  
-  constructor(private CarService:CarService) { }
+  constructor(private carService:CarService, private activatedRoute:ActivatedRoute) { }
 
   ngOnInit(): void {
-    //console.log("Init çalıştı");
-    this.getCars();
-  }
-getCars(){
-  //console.log("Api request başladı");
-    this.CarService.getCars().subscribe(response=>{
-      this.cars=response.data
-      this.dataLoaded=true;
-      //console.log("Api request bitti");
+    this.activatedRoute.params.subscribe(params => {
+      if(params["brandId"]){
+        this.getCarsByBrand(params["brandId"])
+      }
+      else if(params["colorId"]){
+        this.getCarsByColor(params["colorId"])
+      }
+      else{
+        this.getCars()
+      }
     })
-    //console.log("Metod bitti");
-}
+  }
+
+  getCars(){
+    this.carService.getCarsDetails().subscribe(response=>{
+      this.cars = response.data
+    });
+  }
+
+  getCarsByBrand(brandId:number){
+    this.carService.getCarsByBrand(brandId).subscribe(response=>{
+      this.cars = response.data
+      if(response.success){
+        this.dataStatus = true;
+      }
+    });
+  }
+
+  getCarsByColor(colorId:number){
+    this.carService.getCarsByColor(colorId).subscribe(response=>{
+      this.cars = response.data
+      if(response.success){
+        this.dataStatus = true;
+      }
+    });
+  }
+
+  setCurrentCar(car: CarDetailsDto) {
+    this.currentCar = car;
+    console.log(car);
+  }
+  
 }

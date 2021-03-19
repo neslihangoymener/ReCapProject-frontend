@@ -1,21 +1,18 @@
 <div class="container">
   <app-navi></app-navi>
   <div class="row">
-    <div class="coll-md-2">
-      <app-brand></app-brand>
-    </div>
-    <div class="coll-md-2">
-      <app-color></app-color>
-    </div>
-    <div class="coll-md-2">
-      <app-customer></app-customer>
-    </div>
-    <div clas="col-md-3">
-      <app-car></app-car>
-      <div class="coll-md-3">
-        <app-rental></app-rental>
+      <div class="col-md-3">
+          <br>
+          <h4 style="background-color: rgb(17, 0, 255); color: white; text-align: center;">Markalar</h4>
+          <app-brand></app-brand>
+          <br>
+          <h4 style="background-color:rgb(17, 0, 255); color: white; text-align: center;">Renkler</h4>
+          <app-color></app-color>
       </div>
-    </div>
-  </div>  
-  <router-outlet></router-outlet>
+      <div class="col-md-9">
+          <br>
+          <router-outlet></router-outlet>
+      </div>
+</div>
+<br><br>
 </div>
