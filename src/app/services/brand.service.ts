@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { ListResponseModel } from '../models/listResponseModel';
 import { Injectable } from '@angular/core';
+import { environment } from 'src/environments/environment';
 
 
 @Injectable({
@@ -11,7 +12,8 @@ import { Injectable } from '@angular/core';
 
 export class BrandService {
 
-  apiUrl = 'https://localhost:44367/api/brands/getall';
+  //apiUrl = 'https://localhost:44367/api/brands/getall';
+  apiUrl = environment.apiUrl +'brands/getall';
 
   constructor(private httpClient: HttpClient) { }
 

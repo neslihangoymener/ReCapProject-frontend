@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Color } from '../models/color';
 import { ListResponseModel } from '../models/listResponseModel';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -10,7 +11,8 @@ import { ListResponseModel } from '../models/listResponseModel';
 
 export class ColorService {
 
-  apiUrl = 'https://localhost:44367/api/colors/getall';
+  //apiUrl = 'https://localhost:44367/api/colors/getall';
+  apiUrl = environment.apiUrl +'colors/getall';
 
   constructor(private httpClient: HttpClient) { }
 

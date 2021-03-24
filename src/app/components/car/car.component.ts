@@ -1,68 +1,73 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { CarDetailsDto } from 'src/app/models/carDetailsDto';
+import { Brand } from 'src/app/models/brand';
+import { Car } from 'src/app/models/car';
 import { CarService } from 'src/app/services/car.service';
-
+import { ToastrService } from 'ngx-toastr';
 @Component({
   selector: 'app-car',
   templateUrl: './car.component.html',
   styleUrls: ['./car.component.css']
 })
-export class CarComponent implements OnInit {
-  cars : CarDetailsDto[] = [];
-  currentCar: CarDetailsDto = {
-    carId: 0,
-    brandName: '',
-    colorName: '',
-    dailyPrice: 0,
-    description:'',    
-    modelYear:0,
-  };
-  dataStatus : boolean = false;
 
-  constructor(private carService:CarService, private activatedRoute:ActivatedRoute) { }
+export class CarComponent implements OnInit {
+cars : Car[] = [];
+brands: Brand[] = [];
+dataLoaded = false;
+  constructor(
+    private carService:CarService,
+    private activatedRoute:ActivatedRoute,
+    private toastr: ToastrService
+    ) { }
 
   ngOnInit(): void {
     this.activatedRoute.params.subscribe(params => {
-      if(params["brandId"]){
-        this.getCarsByBrand(params["brandId"])
+      if(params["colorId"] && params["brandId"]){
+        this.getCarByFilter(params["brandId"],params["colorId"]);
+      }
+      else if(params["brandId"]){
+        this.getCarByBrand(params["brandId"]);
+        console.log(params["brandId"]);
       }
       else if(params["colorId"]){
-        this.getCarsByColor(params["colorId"])
+        this.getCarByColor(params["colorId"]);
       }
-      else{
-        this.getCars()
+      else {
+        this.getCar();
       }
+    });
+  }
+  getCarByFilter(brandId:Number, colorId: Number) {
+    this.carService.getCarByBrandAndColor(brandId,colorId).subscribe(response => {
+      this.cars = response.data,
+      this.dataLoaded = true
+      if(this.cars.length == 0){
+        this.toastr.info('Arama sonuçlarınız...', 'Arama Sonucu');
+      }
+    })
+    
+  }
+  getCar(){
+    this.carService.getCar().subscribe(response => {
+      this.cars = response.data,
+      this.dataLoaded = true
+    })
+   
+  }
+
+  getCarByBrand(brandId:Number){
+    this.carService.getCarByBrand(brandId).subscribe(response => {
+      this.cars = response.data,
+      this.dataLoaded = true
+    })
+  }
+  getCarByColor(colorId:Number){
+    console.log(colorId);
+    this.carService.getCarByColor(colorId).subscribe(response => {
+      this.cars = response.data,
+      this.dataLoaded = true
+      console.log(this.cars);
     })
   }
 
-  getCars(){
-    this.carService.getCarsDetails().subscribe(response=>{
-      this.cars = response.data
-    });
-  }
-
-  getCarsByBrand(brandId:number){
-    this.carService.getCarsByBrand(brandId).subscribe(response=>{
-      this.cars = response.data
-      if(response.success){
-        this.dataStatus = true;
-      }
-    });
-  }
-
-  getCarsByColor(colorId:number){
-    this.carService.getCarsByColor(colorId).subscribe(response=>{
-      this.cars = response.data
-      if(response.success){
-        this.dataStatus = true;
-      }
-    });
-  }
-
-  setCurrentCar(car: CarDetailsDto) {
-    this.currentCar = car;
-    console.log(car);
-  }
-  
 }
